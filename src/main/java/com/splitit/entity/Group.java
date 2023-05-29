@@ -23,11 +23,11 @@ public class Group {
 	private long id;
 
 	@Nonnull
-	@Size(max=20, min = 5)
-	@Column(name="name")
+	@Size(max = 20, min = 5)
+	@Column(name = "name")
 	private String name;
-	
-	@Column(name="description")
+
+	@Column(name = "description")
 	private String description;
-	
+
 }
