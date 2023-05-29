@@ -1,6 +1,7 @@
 package com.splitit.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.splitit.util.ApplicationConstants;
 
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Email;
@@ -13,26 +14,26 @@ import lombok.NoArgsConstructor;
 public class RegisterUserDto {
 
 	@JsonProperty("first_name")
-	@NotBlank(message = "First name must not be empty")
+	@NotBlank(message = ApplicationConstants.ERROR_FIRST_NAME_EMPTY)
 	@Nonnull
 	private String firstName;
 
 	@JsonProperty("last_name")
-	@NotBlank(message = "Last name must not be empty")
+	@NotBlank(message = ApplicationConstants.ERROR_LAST_NAME_EMPTY)
 	@Nonnull
 	private String lastName;
 
 	@JsonProperty("user_name")
-	@NotBlank(message = "User name must not be empty")
+	@NotBlank(message = ApplicationConstants.ERROR_USER_NAME_EMPTY)
 	@Nonnull
 	private String userName;
 
-	@NotBlank(message = "Email must not be empty")
+	@NotBlank(message = ApplicationConstants.ERROR_EMAIL_EMPTY)
 	@Nonnull
-	@Email(message = "The email is not a valid email")
+	@Email(message = ApplicationConstants.INVALID_EMAIL)
 	private String email;
 
-	@NotBlank(message = "Password must not be empty")
+	@NotBlank(message = ApplicationConstants.ERROR_PASSWORD_EMPTY)
 	@Nonnull
 	private String password;
 }
