@@ -35,7 +35,7 @@ public class SecurityConfiguration {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(authz -> authz.requestMatchers("/login", "/register")
 						.permitAll())
-				.authorizeHttpRequests(authz -> authz.requestMatchers("/register")
+				.authorizeHttpRequests(authz -> authz.requestMatchers("/group/**")
 						.authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
