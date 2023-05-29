@@ -22,6 +22,8 @@ import com.splitit.exception.UserAlreadyExistsException;
 import com.splitit.service.JwtService;
 import com.splitit.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class UserController {
 	@Autowired
@@ -34,7 +36,7 @@ public class UserController {
 	private AuthenticationManager authenticationManager;
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
+	public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
 		User user = userService.register(registerUserDto);
 
 		RegisterResponseDto userResponseDto = new RegisterResponseDto();

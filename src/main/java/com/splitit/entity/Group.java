@@ -21,8 +21,7 @@ public class Group {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
-	
+
 	@Nonnull
 	@Size(max=20, min = 5)
 	@Column(name="name")
