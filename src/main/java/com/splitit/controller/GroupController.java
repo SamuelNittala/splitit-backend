@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.splitit.dto.CreateGroupRequestDto;
+import com.splitit.dto.UserGroupDto;
 import com.splitit.entity.Group;
 import com.splitit.service.GroupService;
 
@@ -28,6 +29,14 @@ public class GroupController {
 		Group group = groupService.createGroup(addGroupRequestDto);
 		Map<String, String> response = new HashMap<>();
 		response.put("success", "Group " + group.getName() + " created");
+		return ResponseEntity.ok(response);
+
+	}
+
+	public ResponseEntity<?> addMembersInGroup(@RequestBody UserGroupDto userGroupDto) {
+		groupService.addMembersInGroup(userGroupDto);
+		Map<String, String> response = new HashMap<>();
+		response.put("success", "added " + userGroupDto.getPhoneNumbers() + " numbers");
 		return ResponseEntity.ok(response);
 
 	}

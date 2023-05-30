@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.splitit.dto.CreateGroupRequestDto;
+import com.splitit.dto.UserGroupDto;
 import com.splitit.entity.Group;
 import com.splitit.entity.User;
 import com.splitit.entity.UserGroup;
@@ -30,8 +31,7 @@ public class GroupService {
 	private UserGroupRepository userGroupRepository;
 
 	public Group createGroup(CreateGroupRequestDto createGroupRequestDto) {
-		Authentication authentication = SecurityContextHolder.getContext()
-				.getAuthentication();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String currentPrincipalName = authentication.getName();
 		Optional<User> userOptional = userRepository.findByUserName(currentPrincipalName);
 		if (userOptional.isPresent()) {
@@ -51,6 +51,28 @@ public class GroupService {
 			return group;
 		}
 		throw new UsernameNotFoundException("Invalid reequest!");
+	}
+
+	public void addMembersInGroup(UserGroupDto userGroupDto) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = authentication.getName();
+		Optional<User> userOptional = userRepository.findByUserName(currentPrincipalName);
+		if (userOptional.isPresent() && groupRepository.findByName(userGroupDto.getGroupName()).isPresent()) {
+			UserGroup userGroup = new UserGroup();
+			userGroup.setUser(userOptional.get());
+			userGroup.setGroup(groupRepository.findByName(userGroupDto.getGroupName()).get());
+			userGroupRepository.save(userGroup);
+			for (int i = 0; i < userGroupDto.getPhoneNumbers().size(); i++) {
+				UserGroup userGroupForList = new UserGroup();
+				if (userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers().get(i)).isPresent()) {
+					userGroupForList
+							.setUser(userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers().get(i)).get());
+					userGroupForList.setGroup(groupRepository.findByName(userGroupDto.getGroupName()).get());
+				}
+				throw new UsernameNotFoundException("Invalid reequest!");
+			}
+		}
+
 	}
 
 }
