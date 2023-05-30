@@ -23,9 +23,11 @@ public class UserService {
 	}
 
 	public User register(RegisterUserDto registerUserDto) {
+		if (userRepository.findByEmail(registerUserDto.getEmail()).isPresent()) {
+			throw new UserAlreadyExistsException("User with email" + registerUserDto.getEmail() + " already exists");
+		}
 
-		if (userRepository.findByUserName(registerUserDto.getUserName())
-				.isPresent()) {
+		if (userRepository.findByUserName(registerUserDto.getUserName()).isPresent()) {
 			throw new UserAlreadyExistsException(
 					"User with username" + registerUserDto.getUserName() + " already exists");
 		}
