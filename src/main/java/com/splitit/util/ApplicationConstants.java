@@ -12,7 +12,7 @@ public class ApplicationConstants {
 	public static final String INVALID_EMAIL = "This email is not a valid email";
 	public static final String EMAIL_ALREADY_USED = "email is already exist";
 	public static final String PHONENUMBER_ALREADY_USED = "phone number is already exist";
-	public static final String USERNAME_ALREADT_USED = "user name is already exist";
+	public static final String USERNAME_ALREADY_USED = "user name is already exist";
 
 	// Prevent instantiation
 	private ApplicationConstants() {

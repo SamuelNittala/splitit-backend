@@ -35,7 +35,7 @@ public class UserService {
 
 		if (userRepository.findByUserName(registerUserDto.getUserName()).isPresent()) {
 			throw new UserAlreadyExistsException(
-					registerUserDto.getUserName() + ApplicationConstants.USERNAME_ALREADT_USED);
+					registerUserDto.getUserName() + ApplicationConstants.USERNAME_ALREADY_USED);
 		}
 
 		User user = new User();
