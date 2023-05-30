@@ -36,4 +36,8 @@ public class RegisterUserDto {
 	@NotBlank(message = ApplicationConstants.ERROR_PASSWORD_EMPTY)
 	@Nonnull
 	private String password;
+
+	@NotBlank(message = ApplicationConstants.ERROR_PHONENUMBER_EMPTY)
+	@Nonnull
+	private Integer phoneNumber;
 }

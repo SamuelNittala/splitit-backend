@@ -46,4 +46,9 @@ public class User {
 	@Email
 	@Size(max = 50)
 	private String email;
+
+	@Nonnull
+	@Size(min = 10, max = 10)
+	@Column(name = "phn_number")
+	private Integer phoneNumber;
 }
