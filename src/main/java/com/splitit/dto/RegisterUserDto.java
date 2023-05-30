@@ -39,5 +39,5 @@ public class RegisterUserDto {
 
 	@NotBlank(message = ApplicationConstants.ERROR_PHONENUMBER_EMPTY)
 	@Nonnull
-	private Integer phoneNumber;
+	private String phoneNumber;
 }
