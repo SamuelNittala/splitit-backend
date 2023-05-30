@@ -44,23 +44,20 @@ public class GroupCreationIntegrationTests {
 		user.setLastName("testLast");
 
 		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(user)))
-				.andExpect(status().isOk());
+				.content(objectMapper.writeValueAsString(user))).andExpect(status().isOk());
 
 		UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto();
 		userLoginRequestDto.setUserName("testUser");
 		userLoginRequestDto.setPassword("password123");
 
-		MvcResult loginResult = mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(userLoginRequestDto)))
-				.andExpect(status().isOk())
-				.andReturn();
+		MvcResult loginResult = mockMvc
+				.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(userLoginRequestDto)))
+				.andExpect(status().isOk()).andReturn();
 
-		String loginResponse = loginResult.getResponse()
-				.getContentAsString();
+		String loginResponse = loginResult.getResponse().getContentAsString();
 
-		String token = JsonPath.parse(loginResponse)
-				.read("$.token");
+		String token = JsonPath.parse(loginResponse).read("$.token");
 
 		this.token = token;
 	}
@@ -68,39 +65,13 @@ public class GroupCreationIntegrationTests {
 	@Test
 	public void shouldCreateNewGroup() throws Exception {
 
-//		RegisterUserDto user = new RegisterUserDto();
-//		user.setUserName("testUser");
-//		user.setPassword("password123");
-//		user.setEmail("testUser@example.com");
-//		user.setFirstName("testFirst");
-//		user.setLastName("testLast");
-//
-//		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
-//				.content(objectMapper.writeValueAsString(user)))
-//				.andExpect(status().isOk());
-//
-//		UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto();
-//		userLoginRequestDto.setUserName("testUser");
-//		userLoginRequestDto.setPassword("password123");
-//
-//		MvcResult loginResult = mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
-//				.content(objectMapper.writeValueAsString(userLoginRequestDto)))
-//				.andExpect(status().isOk())
-//				.andReturn();
-//
-//		String loginResponse = loginResult.getResponse()
-//				.getContentAsString();
-//
-//		String token = JsonPath.parse(loginResponse)
-//				.read("$.token");
-
 		CreateGroupRequestDto createGroupRequestDto = new CreateGroupRequestDto();
 		createGroupRequestDto.setGroupName("test group");
 		createGroupRequestDto.setDescription("test description");
 
-		mockMvc.perform(post("/group/create").contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", "Bearer " + token)
-				.content(objectMapper.writeValueAsString(createGroupRequestDto)))
+		mockMvc.perform(
+				post("/group/create").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token)
+						.content(objectMapper.writeValueAsString(createGroupRequestDto)))
 				.andExpect(status().isOk());
 	}
 
