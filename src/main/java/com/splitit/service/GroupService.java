@@ -57,17 +57,22 @@ public class GroupService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String currentPrincipalName = authentication.getName();
 		Optional<User> userOptional = userRepository.findByUserName(currentPrincipalName);
-		if (userOptional.isPresent() && groupRepository.findByName(userGroupDto.getGroupName()).isPresent()) {
+		Long currentPrincipleId = userRepository.findByUserName(currentPrincipalName).get().getId();
+
+		if (userOptional.isPresent() && groupRepository
+				.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId).isPresent()) {
 			UserGroup userGroup = new UserGroup();
 			userGroup.setUser(userOptional.get());
-			userGroup.setGroup(groupRepository.findByName(userGroupDto.getGroupName()).get());
+			userGroup.setGroup(
+					groupRepository.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId).get());
 			userGroupRepository.save(userGroup);
 			for (int i = 0; i < userGroupDto.getPhoneNumbers().size(); i++) {
 				UserGroup userGroupForList = new UserGroup();
 				if (userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers().get(i)).isPresent()) {
 					userGroupForList
 							.setUser(userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers().get(i)).get());
-					userGroupForList.setGroup(groupRepository.findByName(userGroupDto.getGroupName()).get());
+					userGroupForList.setGroup(groupRepository
+							.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId).get());
 				}
 				throw new UsernameNotFoundException("Invalid reequest!");
 			}
