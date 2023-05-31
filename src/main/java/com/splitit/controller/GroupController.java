@@ -33,6 +33,7 @@ public class GroupController {
 
 	}
 
+	@PostMapping("/add")
 	public ResponseEntity<?> addMembersInGroup(@RequestBody UserGroupDto userGroupDto) {
 		groupService.addMembersInGroup(userGroupDto);
 		Map<String, String> response = new HashMap<>();
