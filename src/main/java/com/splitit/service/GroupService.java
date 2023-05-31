@@ -9,8 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.splitit.dto.AddUserToGroupDto;
 import com.splitit.dto.CreateGroupRequestDto;
-import com.splitit.dto.UserGroupDto;
 import com.splitit.entity.Group;
 import com.splitit.entity.User;
 import com.splitit.entity.UserGroup;
@@ -31,7 +31,8 @@ public class GroupService {
 	private UserGroupRepository userGroupRepository;
 
 	public Group createGroup(CreateGroupRequestDto createGroupRequestDto) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
 		String currentPrincipalName = authentication.getName();
 		Optional<User> userOptional = userRepository.findByUserName(currentPrincipalName);
 		if (userOptional.isPresent()) {
@@ -53,28 +54,36 @@ public class GroupService {
 		throw new UsernameNotFoundException("Invalid reequest!");
 	}
 
-	public void addMembersInGroup(UserGroupDto userGroupDto) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	public void addMembersInGroup(AddUserToGroupDto userGroupDto) {
+
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
 		String currentPrincipalName = authentication.getName();
 		Optional<User> userOptional = userRepository.findByUserName(currentPrincipalName);
-		Long currentPrincipleId = userRepository.findByUserName(currentPrincipalName).get().getId();
 
-		if (userOptional.isPresent() && groupRepository
-				.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId).isPresent()) {
-			UserGroup userGroup = new UserGroup();
-			userGroup.setUser(userOptional.get());
-			userGroup.setGroup(
-					groupRepository.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId).get());
-			userGroupRepository.save(userGroup);
-			for (int i = 0; i < userGroupDto.getPhoneNumbers().size(); i++) {
+		Long currentPrincipleId = userOptional.get()
+				.getId();
+
+		Boolean groupExists = groupRepository
+				.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId)
+				.isPresent();
+
+		if (userOptional.isPresent() && groupExists) {
+			for (int i = 0; i < userGroupDto.getPhoneNumbers()
+					.size(); i++) {
 				UserGroup userGroupForList = new UserGroup();
-				if (userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers().get(i)).isPresent()) {
-					userGroupForList
-							.setUser(userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers().get(i)).get());
-					userGroupForList.setGroup(groupRepository
-							.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId).get());
+				if (userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers()
+						.get(i))
+						.isPresent()) {
+					userGroupForList.setUser(userRepository.findByPhoneNumber(userGroupDto.getPhoneNumbers()
+							.get(i))
+							.get());
+					userGroupForList.setGroup(
+							groupRepository.getGroupByNameAndCreatorId(userGroupDto.getGroupName(), currentPrincipleId)
+									.get());
+				} else {
+					throw new UsernameNotFoundException("Invalid reequest!");
 				}
-				throw new UsernameNotFoundException("Invalid reequest!");
 			}
 		}
 

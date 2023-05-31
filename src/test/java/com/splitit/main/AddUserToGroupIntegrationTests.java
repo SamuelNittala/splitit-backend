@@ -3,6 +3,8 @@ package com.splitit.main;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import com.splitit.dto.AddUserToGroupDto;
 import com.splitit.dto.CreateGroupRequestDto;
 import com.splitit.dto.RegisterUserDto;
 import com.splitit.dto.UserLoginRequestDto;
@@ -25,7 +28,8 @@ import com.splitit.dto.UserLoginRequestDto;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
-public class GroupCreationIntegrationTests {
+public class AddUserToGroupIntegrationTests {
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -64,10 +68,6 @@ public class GroupCreationIntegrationTests {
 				.read("$.token");
 
 		this.token = token;
-	}
-
-	@Test
-	public void shouldCreateNewGroup() throws Exception {
 
 		CreateGroupRequestDto createGroupRequestDto = new CreateGroupRequestDto();
 		createGroupRequestDto.setGroupName("test group");
@@ -76,6 +76,29 @@ public class GroupCreationIntegrationTests {
 		mockMvc.perform(post("/group/create").contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + token)
 				.content(objectMapper.writeValueAsString(createGroupRequestDto)))
+				.andExpect(status().isOk());
+
+		user = new RegisterUserDto();
+		user.setUserName("testUser2");
+		user.setPassword("password123");
+		user.setEmail("testUser2@example.com");
+		user.setFirstName("testFirst");
+		user.setLastName("testLast");
+		user.setPhoneNumber("9704292581");
+
+		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(user)))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldAllowAddingExistingUserToExistingGroup() throws Exception {
+		AddUserToGroupDto addUserToGroupDto = new AddUserToGroupDto();
+		addUserToGroupDto.setGroupName("test group");
+		addUserToGroupDto.setPhoneNumbers(Arrays.asList("9704292581"));
+		mockMvc.perform(post("/group/add").contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer " + token)
+				.content(objectMapper.writeValueAsString(addUserToGroupDto)))
 				.andExpect(status().isOk());
 	}
 

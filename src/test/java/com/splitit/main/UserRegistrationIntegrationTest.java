@@ -34,6 +34,7 @@ public class UserRegistrationIntegrationTest {
 		user.setEmail("testUser@example.com");
 		user.setFirstName("testFirst");
 		user.setLastName("testLast");
+		user.setPhoneNumber("111111111");
 
 		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
@@ -46,6 +47,8 @@ public class UserRegistrationIntegrationTest {
 		user.setUserName("testUser");
 		user.setPassword("password123");
 		user.setEmail("testUser@example.com");
+		user.setPhoneNumber("111111111");
+
 		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
 				.andExpect(status().isBadRequest())

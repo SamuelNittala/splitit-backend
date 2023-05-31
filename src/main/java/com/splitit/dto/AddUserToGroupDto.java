@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserGroupDto {
+public class AddUserToGroupDto {
 
 	private String groupName;
 

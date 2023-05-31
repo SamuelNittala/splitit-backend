@@ -9,8 +9,6 @@ import com.splitit.entity.Group;
 
 public interface GroupRepository extends CrudRepository<Group, Long> {
 
-	Optional<Group> findByGroupName(String groupName);
-
 	Optional<Group> findByName(String groupName);
 
 	@Query(value = "SELECT * FROM groups where name = ?1 AND id = ?2", nativeQuery = true)
