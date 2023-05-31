@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,4 +47,9 @@ public class User {
 	@Email
 	@Size(max = 50)
 	private String email;
+
+	@Nonnull
+	@Size(min = 10, max = 10)
+	@Column(name = "phn_number")
+	private String phoneNumber;
 }
