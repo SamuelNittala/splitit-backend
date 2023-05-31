@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.splitit.dto.RegisterUserDto;
-import com.splitit.repo.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,7 +32,7 @@ public class UserRegistrationIntegrationTest {
 	private ObjectMapper objectMapper;
 
 	@Autowired
-	private UserRepository userRepository;
+	private JdbcTemplate jdbcTemplate;
 
 	private String userName = "testUser";
 
@@ -44,7 +44,7 @@ public class UserRegistrationIntegrationTest {
 		user.setEmail("testUser@example.com");
 		user.setFirstName("testFirst");
 		user.setLastName("testLast");
-		user.setPhoneNumber("111111111");
+		user.setPhoneNumber("8978325434");
 
 		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
@@ -57,7 +57,7 @@ public class UserRegistrationIntegrationTest {
 		user.setUserName("testUser");
 		user.setPassword("password123");
 		user.setEmail("testUser@example.com");
-		user.setPhoneNumber("111111111");
+		user.setPhoneNumber("9704292581");
 
 		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
@@ -67,9 +67,7 @@ public class UserRegistrationIntegrationTest {
 
 	@AfterAll
 	public void cleanUp() throws Exception {
-		userRepository.deleteById(userRepository.findByUserName(userName)
-				.get()
-				.getId());
+		jdbcTemplate.execute("DELETE FROM users");
 	}
 
 }

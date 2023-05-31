@@ -3,6 +3,7 @@ package com.splitit.main;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,6 +33,9 @@ public class GroupCreationIntegrationTests {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	private String token;
 
@@ -77,6 +82,13 @@ public class GroupCreationIntegrationTests {
 				.header("Authorization", "Bearer " + token)
 				.content(objectMapper.writeValueAsString(createGroupRequestDto)))
 				.andExpect(status().isOk());
+	}
+
+	@AfterAll
+	public void cleanUp() throws Exception {
+		jdbcTemplate.execute("DELETE FROM users");
+		jdbcTemplate.execute("DELETE FROM groups");
+		jdbcTemplate.execute("DELETE FROM user_group");
 	}
 
 }
