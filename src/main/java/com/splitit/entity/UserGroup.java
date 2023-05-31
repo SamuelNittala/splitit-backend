@@ -2,6 +2,9 @@ package com.splitit.entity;
 
 import java.util.Date;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,10 +37,10 @@ public class UserGroup {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "group_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Group group;
 
 	@Column(name = "joined_time")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date joinedTime;
-
 }

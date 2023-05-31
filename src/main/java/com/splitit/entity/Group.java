@@ -1,6 +1,5 @@
 package com.splitit.entity;
 
-import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -34,6 +33,8 @@ public class Group {
 	@Column(name = "name")
 	private String name;
 
+	@Nonnull
+	@Size(max = 50, min = 5)
 	@Column(name = "description")
 	private String description;
 

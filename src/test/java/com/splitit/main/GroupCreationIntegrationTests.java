@@ -1,10 +1,10 @@
 package com.splitit.main;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -15,16 +15,19 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import com.splitit.dto.CreateGroupRequestDto;
 import com.splitit.dto.RegisterUserDto;
+import com.splitit.dto.UserLoginRequestDto;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
-public class UserRegistrationIntegrationTest {
-
+public class GroupCreationIntegrationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -34,12 +37,12 @@ public class UserRegistrationIntegrationTest {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private String userName = "testUser";
+	private String token;
 
-	@Test
-	public void shouldCreateNewUser() throws Exception {
+	@BeforeAll
+	public void setup() throws Exception {
 		RegisterUserDto user = new RegisterUserDto();
-		user.setUserName(userName);
+		user.setUserName("testUser");
 		user.setPassword("password123");
 		user.setEmail("testUser@example.com");
 		user.setFirstName("testFirst");
@@ -49,25 +52,43 @@ public class UserRegistrationIntegrationTest {
 		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
 				.andExpect(status().isOk());
+
+		UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto();
+		userLoginRequestDto.setUserName("testUser");
+		userLoginRequestDto.setPassword("password123");
+
+		MvcResult loginResult = mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(userLoginRequestDto)))
+				.andExpect(status().isOk())
+				.andReturn();
+
+		String loginResponse = loginResult.getResponse()
+				.getContentAsString();
+
+		String token = JsonPath.parse(loginResponse)
+				.read("$.token");
+
+		this.token = token;
 	}
 
 	@Test
-	public void shouldThrowErrorsWhenKeyNotPresent() throws Exception {
-		RegisterUserDto user = new RegisterUserDto();
-		user.setUserName("testUser");
-		user.setPassword("password123");
-		user.setEmail("testUser@example.com");
-		user.setPhoneNumber("9704292581");
+	public void shouldCreateNewGroup() throws Exception {
 
-		mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(user)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors").isArray());
+		CreateGroupRequestDto createGroupRequestDto = new CreateGroupRequestDto();
+		createGroupRequestDto.setGroupName("test group");
+		createGroupRequestDto.setDescription("test description");
+
+		mockMvc.perform(post("/group/create").contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer " + token)
+				.content(objectMapper.writeValueAsString(createGroupRequestDto)))
+				.andExpect(status().isOk());
 	}
 
 	@AfterAll
 	public void cleanUp() throws Exception {
 		jdbcTemplate.execute("DELETE FROM users");
+		jdbcTemplate.execute("DELETE FROM groups");
+		jdbcTemplate.execute("DELETE FROM user_group");
 	}
 
 }
