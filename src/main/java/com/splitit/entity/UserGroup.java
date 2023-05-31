@@ -1,10 +1,7 @@
 package com.splitit.entity;
 
-import org.hibernate.annotations.ManyToAny;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import java.util.Date;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,23 +21,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups")
-public class Group {
+@Table(name = "user_group")
+public class UserGroup {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-
-	@Nonnull
-	@Size(max = 20, min = 5)
-	@Column(name = "name")
-	private String name;
-
-	@Column(name = "description")
-	private String description;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "creator_id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private User creator;
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "group_id", nullable = false)
+	private Group group;
+
+	@Column(name = "joined_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date joinedTime;
 
 }

@@ -42,7 +42,9 @@ public class UserController {
 		RegisterResponseDto userResponseDto = new RegisterResponseDto();
 		userResponseDto.setFirstName(user.getFirstName());
 		userResponseDto.setLastName(user.getLastName());
-
+		userResponseDto.setEmail(user.getEmail());
+		userResponseDto.setPhoneNumber(user.getPhoneNumber());
+		userResponseDto.setUserName(user.getUserName());
 		return ResponseEntity.ok(userResponseDto);
 	}
 
